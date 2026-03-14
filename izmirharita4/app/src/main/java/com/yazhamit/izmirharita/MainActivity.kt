@@ -493,15 +493,20 @@ fun HaritaEkrani(onComplete: () -> Unit) {
     }
 
     fun getBitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
-        return ContextCompat.getDrawable(context, vectorResId)?.run {
-            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-            val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
-            draw(Canvas(bitmap))
-            BitmapDescriptorFactory.fromBitmap(bitmap)
+        return try {
+            ContextCompat.getDrawable(context, vectorResId)?.run {
+                setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+                val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+                draw(Canvas(bitmap))
+                BitmapDescriptorFactory.fromBitmap(bitmap)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 
-    val yelkenliIcon = getBitmapDescriptorFromVector(context, R.drawable.ic_yelkenli_pin)
+    val yelkenliIcon = remember { getBitmapDescriptorFromVector(context, R.drawable.ic_yelkenli_pin) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         GoogleMap(
